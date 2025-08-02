@@ -96,7 +96,7 @@ const HomeScreen = () => {
                             <Feather name="calendar" size={16} color="white" />
                         }
                     />
-                    <View className="flex-row justify-between mb-6">
+                    <View className="flex-row justify-between gap-2 mb-6">
                         <LunarInfoCard
                             type="day"
                             lunarDate={currentLunar.lunarDate.day}

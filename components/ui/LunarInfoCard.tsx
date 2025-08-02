@@ -18,7 +18,10 @@ const LunarInfoCard = ({
 }: LunarInfoCardProps) => {
     return (
         <View
-            className={`flex-1 bg-white/80 rounded-xl p-4 mr-2 shadow-sm ${className}`}
+            className={`flex-1 p-4 shadow-sm bg-white ${className}`}
+            style={{
+                borderRadius: 10,
+            }}
         >
             <View
                 className={`self-center backdrop-blur-xl rounded-full px-4 py-1 border mb-4 ${
