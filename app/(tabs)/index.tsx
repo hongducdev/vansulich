@@ -1,11 +1,7 @@
 import Heading from "@/components/Heading";
 import LunarInfoCard from "@/components/ui/LunarInfoCard";
-import {
-    getCurrentLunarDate,
-    SOLAR_TERMS,
-    type LunarInfo,
-} from "@/constants/VILunar";
-import ZodiacIcon from "@/constants/ZodiacIcon";
+import { getTodayAuspiciousHours, HourInfo } from "@/constants/AuspiciousHours";
+import { getCurrentLunarDate, type LunarInfo } from "@/constants/VILunar";
 import { Feather } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import {
@@ -19,14 +15,21 @@ import {
 const HomeScreen = () => {
     const [currentLunar, setCurrentLunar] = useState<LunarInfo | null>(null);
     const [selectedDate, setSelectedDate] = useState(new Date());
+    const [auspiciousHours, setAuspiciousHours] = useState<any>(null);
 
     useEffect(() => {
         updateLunarDate();
+        updateAuspiciousHours();
     }, []);
 
     const updateLunarDate = () => {
         const lunarInfo = getCurrentLunarDate();
         setCurrentLunar(lunarInfo);
+    };
+
+    const updateAuspiciousHours = () => {
+        const hours = getTodayAuspiciousHours();
+        setAuspiciousHours(hours);
     };
 
     const formatLunarDisplay = (lunarInfo: LunarInfo) => {
@@ -41,7 +44,7 @@ const HomeScreen = () => {
         return `Ngày ${lunarDate.day} tháng ${lunarDate.monthName}${leapText} năm ${lunarDate.can} ${lunarDate.chi}`;
     };
 
-    if (!currentLunar) {
+    if (!currentLunar || !auspiciousHours) {
         return (
             <View className="flex-1 items-center justify-center bg-white">
                 <Text className="text-lg">Đang tải thông tin âm lịch...</Text>
@@ -115,6 +118,52 @@ const HomeScreen = () => {
                             lunarCan={currentLunar.lunarDate.can}
                             lunarChi={currentLunar.lunarDate.chi}
                         />
+                    </View>
+                </View>
+                <View className="mb-6">
+                    <Heading
+                        title="Giờ Hoàng Đạo"
+                        icon={<Feather name="clock" size={16} color="white" />}
+                    />
+                    <View
+                        className="bg-white rounded-xl p-4 mb-4 shadow-sm"
+                        style={{ borderRadius: 10 }}
+                    >
+                        <View className="flex-row items-center justify-between mb-3">
+                            <Text className="text-gray-800 font-semibold text-lg">
+                                Tất cả giờ hoàng đạo hôm nay
+                            </Text>
+                            <TouchableOpacity>
+                                <Feather
+                                    name="info"
+                                    size={20}
+                                    color="#4CAF50"
+                                />
+                            </TouchableOpacity>
+                        </View>
+                        <View>
+                            {auspiciousHours.auspiciousHours.map(
+                                (hour: HourInfo, index: number) => (
+                                    <View
+                                        key={index}
+                                        className="flex-row items-center justify-between p-3"
+                                    >
+                                        <View className="flex-row items-center">
+                                            <View>
+                                                <Text className="text-gray-800 font-semibold">
+                                                    {hour.hour} (
+                                                    {hour.startTime} -{" "}
+                                                    {hour.endTime})
+                                                </Text>
+                                                <Text className="text-gray-600 text-sm">
+                                                    {hour.description}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                    </View>
+                                )
+                            )}
+                        </View>
                     </View>
                 </View>
             </View>
