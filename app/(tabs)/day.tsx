@@ -64,7 +64,7 @@ const HomeScreen = () => {
                     imageStyle={{ opacity: 0.9 }}
                 >
                     <View className="bg-black/30 pt-16">
-                        <View className="self-center bg-white/30 backdrop-blur-xl rounded-full px-6 py-2 mb-20 shadow-lg border border-white/30">
+                        <View className="self-center bg-white/30 backdrop-blur-xl rounded-full px-6 py-2 mb-16 shadow-lg border border-white/30">
                             <Text className="text-xl font-semibold text-center text-white">
                                 {selectedDate.toLocaleDateString("vi-VN", {
                                     month: "long",
@@ -82,7 +82,7 @@ const HomeScreen = () => {
                                 day: "numeric",
                             })}
                         </Text>
-                        <View className="self-center bg-white/30 backdrop-blur-xl rounded-full px-6 py-2 mb-20 shadow-lg border border-white/30">
+                        <View className="self-center bg-white/30 backdrop-blur-xl rounded-full px-6 py-2 mb-16 shadow-lg border border-white/30">
                             <Text className="text-white font-semibold text-lg">
                                 Âm lịch: {currentLunar.lunarDate.day}/
                                 {currentLunar.lunarDate.month}
