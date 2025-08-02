@@ -1,110 +1,443 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import Heading from "@/components/Heading";
+import YearPickerBottomSheet from "@/components/YearPickerBottomSheet";
+import {
+    getCurrentLunarDate,
+    solarToLunar,
+    type LunarInfo,
+} from "@/constants/VILunar";
+import { useColorScheme } from "@/hooks/useColorScheme";
+import { Feather, Ionicons } from "@expo/vector-icons";
+import React, { useEffect, useState } from "react";
+import {
+    Dimensions,
+    ImageBackground,
+    ScrollView,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 
-import { Collapsible } from '@/components/Collapsible';
-import { ExternalLink } from '@/components/ExternalLink';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { IconSymbol } from '@/components/ui/IconSymbol';
+const { width } = Dimensions.get("window");
 
-export default function TabTwoScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="chevron.left.forwardslash.chevron.right"
-          style={styles.headerImage}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Explore</ThemedText>
-      </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image source={require('@/assets/images/react-logo.png')} style={{ alignSelf: 'center' }} />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Custom fonts">
-        <ThemedText>
-          Open <ThemedText type="defaultSemiBold">app/_layout.tsx</ThemedText> to see how to load{' '}
-          <ThemedText style={{ fontFamily: 'SpaceMono' }}>
-            custom fonts such as this one.
-          </ThemedText>
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/versions/latest/sdk/font">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user&apos;s current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful <ThemedText type="defaultSemiBold">react-native-reanimated</ThemedText>{' '}
-          library to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
-      </Collapsible>
-    </ParallaxScrollView>
-  );
+interface CalendarDay {
+    date: Date;
+    isCurrentMonth: boolean;
+    isToday: boolean;
+    isSelected: boolean;
+    lunarInfo?: LunarInfo;
 }
 
-const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-});
+const MonthCalendar = () => {
+    const [currentDate, setCurrentDate] = useState(new Date());
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [calendarDays, setCalendarDays] = useState<CalendarDay[]>([]);
+    const [currentLunar, setCurrentLunar] = useState<LunarInfo | null>(null);
+    const [showYearPicker, setShowYearPicker] = useState(false);
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+    const colorScheme = useColorScheme();
+
+    useEffect(() => {
+        generateCalendarDays();
+        updateLunarDate();
+        setSelectedYear(currentDate.getFullYear());
+    }, [currentDate, selectedDate]);
+
+    const updateLunarDate = () => {
+        const lunarInfo = getCurrentLunarDate();
+        setCurrentLunar(lunarInfo);
+    };
+
+    const generateCalendarDays = () => {
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+
+        const firstDayOfMonth = new Date(year, month, 1);
+        const lastDayOfMonth = new Date(year, month + 1, 0);
+
+        // Tính ngày đầu tiên của tuần (Chủ nhật)
+        const startDate = new Date(firstDayOfMonth);
+        const firstDayWeekday = firstDayOfMonth.getDay(); // 0 = Chủ nhật, 1 = Thứ 2, ...
+        startDate.setDate(startDate.getDate() - firstDayWeekday);
+
+        const days: CalendarDay[] = [];
+        const today = new Date();
+
+        // Tạo 6 tuần (42 ngày) để đảm bảo hiển thị đầy đủ
+        for (let week = 0; week < 6; week++) {
+            for (let dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
+                const date = new Date(startDate);
+                date.setDate(startDate.getDate() + week * 7 + dayOfWeek);
+
+                const isCurrentMonth = date.getMonth() === month;
+                const isToday = date.toDateString() === today.toDateString();
+                const isSelected =
+                    date.toDateString() === selectedDate.toDateString();
+
+                days.push({
+                    date,
+                    isCurrentMonth,
+                    isToday,
+                    isSelected,
+                });
+            }
+        }
+
+        setCalendarDays(days);
+    };
+
+    const goToPreviousMonth = () => {
+        setCurrentDate(
+            new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
+        );
+    };
+
+    const goToNextMonth = () => {
+        setCurrentDate(
+            new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
+        );
+    };
+
+    const selectDate = (day: CalendarDay) => {
+        setSelectedDate(day.date);
+        // Cập nhật lại calendar để hiển thị ngày được chọn
+        setCalendarDays((prevDays) =>
+            prevDays.map((d) => ({
+                ...d,
+                isSelected: d.date.toDateString() === day.date.toDateString(),
+            }))
+        );
+    };
+
+    const goToYear = (year: number) => {
+        setCurrentDate(new Date(year, currentDate.getMonth(), 1));
+        setSelectedYear(year);
+        setShowYearPicker(false);
+    };
+
+    const toggleYearPicker = () => {
+        setShowYearPicker(!showYearPicker);
+    };
+
+    const getLunarDay = (date: Date) => {
+        try {
+            const lunarInfo = solarToLunar(date);
+            return `${lunarInfo.lunarDate.day}/${lunarInfo.lunarDate.month}`;
+        } catch (error) {
+            // Fallback to simplified calculation
+            const day = date.getDate();
+            const month = date.getMonth() + 1;
+            return `${day}/${month}`;
+        }
+    };
+
+    const formatMonthYear = (date: Date) => {
+        return date.toLocaleDateString("vi-VN", {
+            month: "long",
+            year: "numeric",
+        });
+    };
+
+    const weekDays = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
+
+    return (
+        <>
+            <ScrollView className="flex-1 bg-gray-50">
+                <View className="mt-10 p-2">
+                    {/* Header với background image */}
+                    <ImageBackground
+                        source={{
+                            uri: "https://images.unsplash.com/photo-1545172538-171a802bd867?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                        }}
+                        className="overflow-hidden mb-6 shadow-2xl rounded-b-2xl relative"
+                        imageStyle={{ opacity: 0.9 }}
+                    >
+                        <View className="bg-black/30 pt-16 pb-8">
+                            <View className="flex-row items-center justify-between px-4 mb-4">
+                                <TouchableOpacity
+                                    onPress={goToPreviousMonth}
+                                    className="bg-white/30 backdrop-blur-xl rounded-full p-3"
+                                >
+                                    <Ionicons
+                                        name="chevron-back"
+                                        size={24}
+                                        color="white"
+                                    />
+                                </TouchableOpacity>
+
+                                <TouchableOpacity
+                                    onPress={toggleYearPicker}
+                                    className="bg-white/30 backdrop-blur-xl rounded-full px-6 py-2"
+                                >
+                                    <Text className="text-xl font-semibold text-center text-white">
+                                        {formatMonthYear(currentDate)}
+                                    </Text>
+                                    <Text className="text-sm text-center text-white/80">
+                                        Nhấn để chọn năm
+                                    </Text>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity
+                                    onPress={goToNextMonth}
+                                    className="bg-white/30 backdrop-blur-xl rounded-full p-3"
+                                >
+                                    <Ionicons
+                                        name="chevron-forward"
+                                        size={24}
+                                        color="white"
+                                    />
+                                </TouchableOpacity>
+                            </View>
+
+                            <View className="self-center bg-white/30 backdrop-blur-xl rounded-full px-6 py-2 mb-4">
+                                <Text className="text-white font-semibold text-lg">
+                                    Ngày được chọn:{" "}
+                                    {selectedDate.toLocaleDateString("vi-VN")}
+                                </Text>
+                            </View>
+                        </View>
+                    </ImageBackground>
+
+                    {/* Calendar Grid */}
+                    <View className="mb-6">
+                        <Heading
+                            title="Lịch tháng"
+                            icon={
+                                <Feather
+                                    name="calendar"
+                                    size={16}
+                                    color="white"
+                                />
+                            }
+                        />
+
+                        <View className="bg-white rounded-xl p-4 shadow-sm">
+                            {/* Week days header */}
+                            <View className="flex-row mb-2">
+                                {weekDays.map((day, index) => (
+                                    <View
+                                        key={index}
+                                        className="flex-1 items-center py-2"
+                                    >
+                                        <Text className="text-gray-600 font-semibold text-sm">
+                                            {day}
+                                        </Text>
+                                    </View>
+                                ))}
+                            </View>
+
+                            {/* Calendar days */}
+                            <View>
+                                {Array.from({ length: 6 }, (_, weekIndex) => (
+                                    <View key={weekIndex} className="flex-row">
+                                        {calendarDays
+                                            .slice(
+                                                weekIndex * 7,
+                                                (weekIndex + 1) * 7
+                                            )
+                                            .map((day, dayIndex) => (
+                                                <TouchableOpacity
+                                                    key={dayIndex}
+                                                    onPress={() =>
+                                                        selectDate(day)
+                                                    }
+                                                    style={{
+                                                        width: (width - 32) / 7,
+                                                        height: 64,
+                                                    }}
+                                                    className={`items-center justify-center border border-gray-100 ${
+                                                        day.isSelected
+                                                            ? "bg-blue-300"
+                                                            : day.isToday
+                                                              ? "bg-blue-500"
+                                                              : day.isCurrentMonth
+                                                                ? "bg-white"
+                                                                : "bg-gray-50"
+                                                    }`}
+                                                >
+                                                    <Text
+                                                        className={`text-sm font-medium ${
+                                                            day.isSelected
+                                                                ? "text-blue-800"
+                                                                : day.isToday
+                                                                  ? "text-white"
+                                                                  : day.isCurrentMonth
+                                                                    ? "text-gray-800"
+                                                                    : "text-gray-400"
+                                                        }`}
+                                                    >
+                                                        {day.date.getDate()}
+                                                    </Text>
+                                                    <Text
+                                                        className={`text-xs ${
+                                                            day.isSelected
+                                                                ? "text-white"
+                                                                : day.isToday
+                                                                  ? "text-white"
+                                                                  : day.isCurrentMonth
+                                                                    ? "text-gray-500"
+                                                                    : "text-gray-300"
+                                                        }`}
+                                                    >
+                                                        {getLunarDay(day.date)}
+                                                    </Text>
+                                                </TouchableOpacity>
+                                            ))}
+                                    </View>
+                                ))}
+                            </View>
+                        </View>
+                    </View>
+
+                    {/* Selected Date Info */}
+                    <View className="mb-6">
+                        <Heading
+                            title="Thông tin ngày được chọn"
+                            icon={
+                                <Feather name="info" size={16} color="white" />
+                            }
+                        />
+
+                        <View className="bg-white rounded-xl p-4 shadow-sm">
+                            <View className="flex-row items-center justify-between mb-3">
+                                <Text className="text-gray-800 font-semibold text-lg">
+                                    {selectedDate.toLocaleDateString("vi-VN", {
+                                        weekday: "long",
+                                        year: "numeric",
+                                        month: "long",
+                                        day: "numeric",
+                                    })}
+                                </Text>
+                                <View className="bg-blue-100 rounded-full px-3 py-1">
+                                    <Text className="text-blue-600 font-medium text-sm">
+                                        {selectedDate.toLocaleDateString(
+                                            "vi-VN",
+                                            {
+                                                weekday: "short",
+                                            }
+                                        )}
+                                    </Text>
+                                </View>
+                            </View>
+
+                            {(() => {
+                                try {
+                                    const selectedLunar =
+                                        solarToLunar(selectedDate);
+                                    return (
+                                        <View className="bg-gray-50 rounded-lg p-3">
+                                            <Text className="text-gray-600 text-sm mb-1">
+                                                Âm lịch:
+                                            </Text>
+                                            <Text className="text-gray-800 font-medium">
+                                                Ngày{" "}
+                                                {selectedLunar.lunarDate.day}{" "}
+                                                tháng{" "}
+                                                {selectedLunar.lunarDate.month}{" "}
+                                                năm{" "}
+                                                {selectedLunar.lunarDate.year}
+                                            </Text>
+                                            <Text className="text-gray-600 text-sm mt-1">
+                                                {selectedLunar.lunarDate.dayCan}{" "}
+                                                {selectedLunar.lunarDate.dayChi}{" "}
+                                                -{" "}
+                                                {
+                                                    selectedLunar.lunarDate
+                                                        .monthCan
+                                                }{" "}
+                                                {
+                                                    selectedLunar.lunarDate
+                                                        .monthChi
+                                                }
+                                            </Text>
+                                        </View>
+                                    );
+                                } catch (error) {
+                                    return null;
+                                }
+                            })()}
+                        </View>
+                    </View>
+
+                    {/* Quick Actions */}
+                    <View className="mb-6">
+                        <Heading
+                            title="Thao tác nhanh"
+                            icon={
+                                <Feather name="zap" size={16} color="white" />
+                            }
+                        />
+
+                        <View className="flex-row gap-3">
+                            <TouchableOpacity
+                                className="flex-1 bg-blue-500 rounded-xl p-4 items-center"
+                                onPress={() => {
+                                    const today = new Date();
+                                    setSelectedDate(today);
+                                    setCurrentDate(today);
+                                    // Cập nhật lại calendar để hiển thị ngày được chọn
+                                    setTimeout(() => {
+                                        setCalendarDays((prevDays) =>
+                                            prevDays.map((d) => ({
+                                                ...d,
+                                                isSelected:
+                                                    d.date.toDateString() ===
+                                                    today.toDateString(),
+                                            }))
+                                        );
+                                    }, 100);
+                                }}
+                            >
+                                <Ionicons
+                                    name="today"
+                                    size={24}
+                                    color="white"
+                                />
+                                <Text className="text-white font-medium mt-2">
+                                    Hôm nay
+                                </Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                className="flex-1 bg-green-500 rounded-xl p-4 items-center"
+                                onPress={() => {
+                                    // TODO: Implement add event functionality
+                                }}
+                            >
+                                <Ionicons name="add" size={24} color="white" />
+                                <Text className="text-white font-medium mt-2">
+                                    Thêm sự kiện
+                                </Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                className="flex-1 bg-purple-500 rounded-xl p-4 items-center"
+                                onPress={() => {
+                                    // TODO: Implement settings functionality
+                                }}
+                            >
+                                <Ionicons
+                                    name="settings"
+                                    size={24}
+                                    color="white"
+                                />
+                                <Text className="text-white font-medium mt-2">
+                                    Cài đặt
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </ScrollView>
+
+            {/* Year Picker Bottom Sheet */}
+            <YearPickerBottomSheet
+                visible={showYearPicker}
+                onClose={() => setShowYearPicker(false)}
+                selectedYear={selectedYear}
+                onYearSelect={goToYear}
+            />
+        </>
+    );
+};
+
+export default MonthCalendar;
