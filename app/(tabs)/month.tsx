@@ -1,6 +1,23 @@
 import Heading from "@/components/Heading";
 import YearPickerBottomSheet from "@/components/YearPickerBottomSheet";
 import {
+    dayTypeColor,
+    dayTypeLabel,
+    dayTypeTextColor,
+    getCungHoangDao,
+    getDayType,
+    type Chi,
+    type DayType,
+} from "@/constants/DayType";
+import {
+    getAllHolidays,
+    getHolidayBackgroundColor,
+    getHolidayColor,
+    getHolidaysInMonthWithDistance,
+    getNearestHolidayInfo,
+    type HolidayInfo,
+} from "@/constants/Holidays";
+import {
     getCurrentLunarDate,
     solarToLunar,
     type LunarInfo,
@@ -25,6 +42,8 @@ interface CalendarDay {
     isToday: boolean;
     isSelected: boolean;
     lunarInfo?: LunarInfo;
+    dayType?: DayType;
+    holidays?: HolidayInfo[];
 }
 
 const MonthCalendar = () => {
@@ -52,17 +71,13 @@ const MonthCalendar = () => {
         const month = currentDate.getMonth();
 
         const firstDayOfMonth = new Date(year, month, 1);
-        const lastDayOfMonth = new Date(year, month + 1, 0);
-
-        // Tính ngày đầu tiên của tuần (Chủ nhật)
         const startDate = new Date(firstDayOfMonth);
-        const firstDayWeekday = firstDayOfMonth.getDay(); // 0 = Chủ nhật, 1 = Thứ 2, ...
+        const firstDayWeekday = firstDayOfMonth.getDay();
         startDate.setDate(startDate.getDate() - firstDayWeekday);
 
         const days: CalendarDay[] = [];
         const today = new Date();
 
-        // Tạo 6 tuần (42 ngày) để đảm bảo hiển thị đầy đủ
         for (let week = 0; week < 6; week++) {
             for (let dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
                 const date = new Date(startDate);
@@ -78,6 +93,8 @@ const MonthCalendar = () => {
                     isCurrentMonth,
                     isToday,
                     isSelected,
+                    dayType: getDayTypeFromLunar(date),
+                    holidays: getAllHolidays(date),
                 });
             }
         }
@@ -99,7 +116,6 @@ const MonthCalendar = () => {
 
     const selectDate = (day: CalendarDay) => {
         setSelectedDate(day.date);
-        // Cập nhật lại calendar để hiển thị ngày được chọn
         setCalendarDays((prevDays) =>
             prevDays.map((d) => ({
                 ...d,
@@ -127,6 +143,18 @@ const MonthCalendar = () => {
             const day = date.getDate();
             const month = date.getMonth() + 1;
             return `${day}/${month}`;
+        }
+    };
+
+    const getDayTypeFromLunar = (date: Date): DayType | undefined => {
+        try {
+            const lunarInfo = solarToLunar(date);
+            const chi = lunarInfo.lunarDate.dayChi as Chi;
+            const lunarDay = lunarInfo.lunarDate.day;
+            const cung = getCungHoangDao(lunarDay);
+            return getDayType(chi, cung);
+        } catch (error) {
+            return undefined;
         }
     };
 
@@ -171,9 +199,6 @@ const MonthCalendar = () => {
                                     <Text className="text-xl font-semibold text-center text-white">
                                         {formatMonthYear(currentDate)}
                                     </Text>
-                                    <Text className="text-sm text-center text-white/80">
-                                        Nhấn để chọn năm
-                                    </Text>
                                 </TouchableOpacity>
 
                                 <TouchableOpacity
@@ -186,13 +211,6 @@ const MonthCalendar = () => {
                                         color="white"
                                     />
                                 </TouchableOpacity>
-                            </View>
-
-                            <View className="self-center bg-white/30 backdrop-blur-xl rounded-full px-6 py-2 mb-4">
-                                <Text className="text-white font-semibold text-lg">
-                                    Ngày được chọn:{" "}
-                                    {selectedDate.toLocaleDateString("vi-VN")}
-                                </Text>
                             </View>
                         </View>
                     </ImageBackground>
@@ -209,6 +227,38 @@ const MonthCalendar = () => {
                                 />
                             }
                         />
+
+                        <View className="bg-white rounded-xl p-4 shadow-sm mb-4">
+                            <Text className="text-gray-600 text-sm mb-2 font-medium">
+                                Chú thích:
+                            </Text>
+                            <View className="flex-row gap-4 flex-wrap">
+                                <View className="flex-row items-center">
+                                    <View className="w-4 h-4 bg-green-100 rounded mr-2"></View>
+                                    <Text className="text-sm text-gray-600">
+                                        Hoàng đạo
+                                    </Text>
+                                </View>
+                                <View className="flex-row items-center">
+                                    <View className="w-4 h-4 bg-gray-100 rounded mr-2"></View>
+                                    <Text className="text-sm text-gray-600">
+                                        Hắc đạo
+                                    </Text>
+                                </View>
+                                <View className="flex-row items-center">
+                                    <View className="w-4 h-4 bg-red-100 rounded mr-2"></View>
+                                    <Text className="text-sm text-gray-600">
+                                        Ngày lễ
+                                    </Text>
+                                </View>
+                                <View className="flex-row items-center">
+                                    <View className="w-4 h-4 bg-orange-100 rounded mr-2"></View>
+                                    <Text className="text-sm text-gray-600">
+                                        Mùng 1/Rằm
+                                    </Text>
+                                </View>
+                            </View>
+                        </View>
 
                         <View className="bg-white rounded-xl p-4 shadow-sm">
                             {/* Week days header */}
@@ -250,7 +300,12 @@ const MonthCalendar = () => {
                                                             : day.isToday
                                                               ? "bg-blue-500"
                                                               : day.isCurrentMonth
-                                                                ? "bg-white"
+                                                                ? day.dayType
+                                                                    ? dayTypeColor[
+                                                                          day
+                                                                              .dayType
+                                                                      ]
+                                                                    : "bg-white"
                                                                 : "bg-gray-50"
                                                     }`}
                                                 >
@@ -261,7 +316,13 @@ const MonthCalendar = () => {
                                                                 : day.isToday
                                                                   ? "text-white"
                                                                   : day.isCurrentMonth
-                                                                    ? "text-gray-800"
+                                                                    ? day.holidays &&
+                                                                      day
+                                                                          .holidays
+                                                                          .length >
+                                                                          0
+                                                                        ? "text-red-600"
+                                                                        : "text-gray-800"
                                                                     : "text-gray-400"
                                                         }`}
                                                     >
@@ -280,6 +341,11 @@ const MonthCalendar = () => {
                                                     >
                                                         {getLunarDay(day.date)}
                                                     </Text>
+                                                    {day.holidays &&
+                                                        day.holidays.length >
+                                                            0 && (
+                                                            <View className="w-1 h-1 bg-red-500 rounded-full mt-1" />
+                                                        )}
                                                 </TouchableOpacity>
                                             ))}
                                     </View>
@@ -323,6 +389,9 @@ const MonthCalendar = () => {
                                 try {
                                     const selectedLunar =
                                         solarToLunar(selectedDate);
+                                    const selectedDayType =
+                                        getDayTypeFromLunar(selectedDate);
+
                                     return (
                                         <View className="bg-gray-50 rounded-lg p-3">
                                             <Text className="text-gray-600 text-sm mb-1">
@@ -349,11 +418,183 @@ const MonthCalendar = () => {
                                                         .monthChi
                                                 }
                                             </Text>
+
+                                            {selectedDayType && (
+                                                <View
+                                                    className={`mt-3 p-2 rounded-lg ${dayTypeColor[selectedDayType]}`}
+                                                >
+                                                    <Text
+                                                        className={`font-medium text-sm ${dayTypeTextColor[selectedDayType]}`}
+                                                    >
+                                                        {
+                                                            dayTypeLabel[
+                                                                selectedDayType
+                                                            ]
+                                                        }
+                                                    </Text>
+                                                </View>
+                                            )}
+
+                                            {/* Hiển thị ngày lễ */}
+                                            {(() => {
+                                                const selectedHolidays =
+                                                    getAllHolidays(
+                                                        selectedDate
+                                                    );
+                                                if (
+                                                    selectedHolidays.length > 0
+                                                ) {
+                                                    return (
+                                                        <View className="mt-3">
+                                                            <Text className="text-gray-600 text-sm mb-2">
+                                                                Ngày lễ:
+                                                            </Text>
+                                                            {selectedHolidays.map(
+                                                                (
+                                                                    holidayInfo,
+                                                                    index
+                                                                ) => (
+                                                                    <View
+                                                                        key={
+                                                                            index
+                                                                        }
+                                                                        className={`p-2 rounded-lg mb-1 ${getHolidayBackgroundColor(holidayInfo.type)}`}
+                                                                    >
+                                                                        <Text
+                                                                            className={`font-medium text-sm ${getHolidayColor(holidayInfo.type)}`}
+                                                                        >
+                                                                            {
+                                                                                holidayInfo
+                                                                                    .holiday
+                                                                                    .name_vi
+                                                                            }
+                                                                        </Text>
+                                                                    </View>
+                                                                )
+                                                            )}
+                                                        </View>
+                                                    );
+                                                }
+                                                return null;
+                                            })()}
                                         </View>
                                     );
                                 } catch (error) {
                                     return null;
                                 }
+                            })()}
+                        </View>
+                    </View>
+
+                    {/* Khoảng cách với ngày lễ */}
+                    <View className="mb-6">
+                        <Heading
+                            title="Khoảng cách với ngày lễ"
+                            icon={
+                                <Feather
+                                    name="calendar"
+                                    size={16}
+                                    color="white"
+                                />
+                            }
+                        />
+
+                        <View className="bg-white rounded-xl p-4 shadow-sm">
+                            {(() => {
+                                const today = new Date();
+                                const nearestHoliday =
+                                    getNearestHolidayInfo(today);
+                                const holidaysInMonth =
+                                    getHolidaysInMonthWithDistance(
+                                        today,
+                                        currentDate.getFullYear(),
+                                        currentDate.getMonth()
+                                    );
+
+                                if (holidaysInMonth.length === 0) {
+                                    return (
+                                        <Text className="text-gray-500 text-center py-4">
+                                            Không có ngày lễ nào trong tháng này
+                                        </Text>
+                                    );
+                                }
+
+                                return (
+                                    <View>
+                                        {nearestHoliday && (
+                                            <View className="mb-4 p-3 bg-blue-50 rounded-lg">
+                                                <Text className="text-blue-600 font-semibold text-sm mb-1">
+                                                    Ngày lễ gần nhất:
+                                                </Text>
+                                                <Text className="text-blue-800 font-medium">
+                                                    {
+                                                        nearestHoliday.holiday
+                                                            .holiday.name_vi
+                                                    }
+                                                </Text>
+                                                <Text className="text-blue-600 text-sm">
+                                                    Còn{" "}
+                                                    {nearestHoliday.daysUntil}{" "}
+                                                    ngày
+                                                </Text>
+                                            </View>
+                                        )}
+
+                                        <Text className="text-gray-600 text-sm mb-2 font-medium">
+                                            Tất cả ngày lễ trong tháng:
+                                        </Text>
+                                        {holidaysInMonth
+                                            .slice(0, 5)
+                                            .map((holidayData, index) => (
+                                                <View
+                                                    key={index}
+                                                    className={`p-3 rounded-lg mb-2 ${getHolidayBackgroundColor(holidayData.holiday.type)}`}
+                                                >
+                                                    <View className="flex-row justify-between items-center">
+                                                        <View className="flex-1">
+                                                            <Text
+                                                                className={`font-medium text-sm ${getHolidayColor(holidayData.holiday.type)}`}
+                                                            >
+                                                                {
+                                                                    holidayData
+                                                                        .holiday
+                                                                        .holiday
+                                                                        .name_vi
+                                                                }
+                                                            </Text>
+                                                            <Text className="text-gray-600 text-xs">
+                                                                {holidayData.date.toLocaleDateString(
+                                                                    "vi-VN",
+                                                                    {
+                                                                        day: "numeric",
+                                                                        month: "long",
+                                                                        year: "numeric",
+                                                                    }
+                                                                )}
+                                                            </Text>
+                                                        </View>
+                                                        <View className="bg-gray-100 rounded-full px-2 py-1">
+                                                            <Text className="text-gray-600 text-xs font-medium">
+                                                                {holidayData.daysUntil ===
+                                                                0
+                                                                    ? "Hôm nay"
+                                                                    : holidayData.daysUntil >
+                                                                        0
+                                                                      ? `+${holidayData.daysUntil} ngày`
+                                                                      : `${Math.abs(holidayData.daysUntil)} ngày trước`}
+                                                            </Text>
+                                                        </View>
+                                                    </View>
+                                                </View>
+                                            ))}
+                                        {holidaysInMonth.length > 5 && (
+                                            <Text className="text-gray-500 text-center text-sm mt-2">
+                                                Và {holidaysInMonth.length - 5}{" "}
+                                                ngày lễ khác...
+                                            </Text>
+                                        )}
+                                    </View>
+                                );
                             })()}
                         </View>
                     </View>
@@ -374,7 +615,6 @@ const MonthCalendar = () => {
                                     const today = new Date();
                                     setSelectedDate(today);
                                     setCurrentDate(today);
-                                    // Cập nhật lại calendar để hiển thị ngày được chọn
                                     setTimeout(() => {
                                         setCalendarDays((prevDays) =>
                                             prevDays.map((d) => ({

@@ -1,0 +1,250 @@
+{
+    "international_holidays": [
+        {
+            "date": "01-01",
+            "name_vi": "Năm mới",
+            "name_en": "New Year's Day",
+            "type": "international"
+        },
+        {
+            "date": "04-01",
+            "name_vi": "Ngày Chữ nổi Thế giới",
+            "name_en": "World Braille Day",
+            "type": "international"
+        },
+        {
+            "date": "24-01",
+            "name_vi": "Ngày Quốc tế Giáo dục",
+            "name_en": "International Day of Education",
+            "type": "international"
+        },
+        {
+            "date": "27-01",
+            "name_vi": "Ngày Quốc tế Kỷ niệm Tưởng nhớ Nạn nhân của Nạn diệt chủng Đức quốc xã",
+            "name_en": "International Day of Commemoration in Memory of the Victims of the Holocaust",
+            "type": "international"
+        },
+        {
+            "date": "04-02",
+            "name_vi": "Ngày Ung thư Thế giới",
+            "name_en": "World Cancer Day",
+            "type": "international"
+        },
+        {
+            "date": "08-03",
+            "name_vi": "Ngày Quốc tế Phụ nữ",
+            "name_en": "International Women's Day",
+            "type": "international"
+        },
+        {
+            "date": "20-03",
+            "name_vi": "Ngày Quốc tế Hạnh phúc",
+            "name_en": "International Day of Happiness",
+            "type": "international"
+        },
+        {
+            "date": "22-03",
+            "name_vi": "Ngày Nước Thế giới",
+            "name_en": "World Water Day",
+            "type": "international"
+        },
+        {
+            "date": "07-04",
+            "name_vi": "Ngày Sức khỏe Thế giới",
+            "name_en": "World Health Day",
+            "type": "international"
+        },
+        {
+            "date": "22-04",
+            "name_vi": "Ngày Quốc tế Mẹ Trái Đất",
+            "name_en": "International Mother Earth Day",
+            "type": "international"
+        },
+        {
+            "date": "01-05",
+            "name_vi": "Ngày Quốc tế Lao động",
+            "name_en": "International Workers' Day",
+            "type": "international"
+        },
+        {
+            "date": "05-06",
+            "name_vi": "Ngày Môi trường Thế giới",
+            "name_en": "World Environment Day",
+            "type": "international"
+        },
+        {
+            "date": "20-06",
+            "name_vi": "Ngày Tị nạn Thế giới",
+            "name_en": "World Refugee Day",
+            "type": "international"
+        },
+        {
+            "date": "30-07",
+            "name_vi": "Ngày Hữu nghị Quốc tế",
+            "name_en": "International Day of Friendship",
+            "type": "international"
+        },
+        {
+            "date": "12-08",
+            "name_vi": "Ngày Quốc tế Thanh thiếu niên",
+            "name_en": "International Youth Day",
+            "type": "international"
+        },
+        {
+            "date": "21-09",
+            "name_vi": "Ngày Quốc tế Hòa bình",
+            "name_en": "International Day of Peace",
+            "type": "international"
+        },
+        {
+            "date": "01-10",
+            "name_vi": "Ngày Quốc tế Người cao tuổi",
+            "name_en": "International Day of Older Persons",
+            "type": "international"
+        },
+        {
+            "date": "05-10",
+            "name_vi": "Ngày Nhà giáo Thế giới",
+            "name_en": "World Teachers' Day",
+            "type": "international"
+        },
+        {
+            "date": "16-10",
+            "name_vi": "Ngày Lương thực Thế giới",
+            "name_en": "World Food Day",
+            "type": "international"
+        },
+        {
+            "date": "20-11",
+            "name_vi": "Ngày Thiếu nhi Thế giới",
+            "name_en": "Universal Children's Day",
+            "type": "international"
+        },
+        {
+            "date": "01-12",
+            "name_vi": "Ngày Thế giới phòng chống bệnh AIDS",
+            "name_en": "World AIDS Day",
+            "type": "international"
+        },
+        {
+            "date": "10-12",
+            "name_vi": "Ngày Nhân quyền Quốc tế",
+            "name_en": "Human Rights Day",
+            "type": "international"
+        },
+        {
+            "date": "25-12",
+            "name_vi": "Lễ Giáng Sinh",
+            "name_en": "Christmas Day",
+            "type": "international"
+        }
+    ],
+    "vn_holidays_gregorian": [
+        {
+            "date": "01-01",
+            "name_vi": "Tết Dương lịch",
+            "type": "vn_gregorian"
+        },
+        {
+            "date": "03-02",
+            "name_vi": "Ngày thành lập Đảng Cộng sản Việt Nam",
+            "type": "vn_gregorian"
+        },
+        {
+            "date": "27-02",
+            "name_vi": "Ngày Thầy thuốc Việt Nam",
+            "type": "vn_gregorian"
+        },
+        {
+            "date": "08-03",
+            "name_vi": "Ngày Quốc tế Phụ nữ",
+            "type": "vn_gregorian"
+        },
+        {
+            "date": "20-03",
+            "name_vi": "Ngày Quốc tế Hạnh phúc",
+            "type": "vn_gregorian"
+        },
+        {
+            "date": "26-03",
+            "name_vi": "Ngày thành lập Đoàn Thanh niên Cộng sản Hồ Chí Minh",
+            "type": "vn_gregorian"
+        },
+        { "date": "22-04", "name_vi": "Ngày Trái Đất", "type": "vn_gregorian" },
+        {
+            "date": "30-04",
+            "name_vi": "Ngày Giải phóng Miền Nam, Thống nhất Đất nước",
+            "type": "vn_gregorian"
+        },
+        {
+            "date": "01-05",
+            "name_vi": "Quốc tế Lao động",
+            "type": "vn_gregorian"
+        },
+        {
+            "date": "19-05",
+            "name_vi": "Ngày sinh Chủ tịch Hồ Chí Minh",
+            "type": "vn_gregorian"
+        },
+        {
+            "date": "01-06",
+            "name_vi": "Ngày Quốc tế Thiếu nhi",
+            "type": "vn_gregorian"
+        },
+        {
+            "date": "28-06",
+            "name_vi": "Ngày Gia đình Việt Nam",
+            "type": "vn_gregorian"
+        },
+        {
+            "date": "27-07",
+            "name_vi": "Ngày Thương binh Liệt sĩ",
+            "type": "vn_gregorian"
+        },
+        {
+            "date": "19-08",
+            "name_vi": "Ngày Cách mạng tháng Tám thành công",
+            "type": "vn_gregorian"
+        },
+        {
+            "date": "02-09",
+            "name_vi": "Ngày Quốc khánh nước Việt Nam",
+            "type": "vn_gregorian"
+        },
+        {
+            "date": "20-10",
+            "name_vi": "Ngày thành lập Hội Phụ nữ Việt Nam",
+            "type": "vn_gregorian"
+        },
+        {
+            "date": "20-11",
+            "name_vi": "Ngày Nhà giáo Việt Nam",
+            "type": "vn_gregorian"
+        },
+        {
+            "date": "22-12",
+            "name_vi": "Ngày thành lập Quân đội Nhân dân Việt Nam",
+            "type": "vn_gregorian"
+        },
+        { "date": "25-12", "name_vi": "Lễ Giáng Sinh", "type": "vn_gregorian" }
+    ],
+    "vn_holidays_lunar": [
+        { "date": "01-01", "name_vi": "Tết Nguyên đán", "type": "vn_lunar" },
+        { "date": "15-01", "name_vi": "Tết Nguyên Tiêu", "type": "vn_lunar" },
+        { "date": "03-03", "name_vi": "Tết Hàn Thực", "type": "vn_lunar" },
+        { "date": "10-03", "name_vi": "Giỗ tổ Hùng Vương", "type": "vn_lunar" },
+        { "date": "15-04", "name_vi": "Lễ Phật Đản", "type": "vn_lunar" },
+        { "date": "05-05", "name_vi": "Tết Đoan Ngọ", "type": "vn_lunar" },
+        { "date": "15-07", "name_vi": "Lễ Vu Lan", "type": "vn_lunar" },
+        { "date": "15-08", "name_vi": "Tết Trung Thu", "type": "vn_lunar" },
+        {
+            "date": "23-12",
+            "name_vi": "Lễ cúng Ông Công, Ông Táo",
+            "type": "vn_lunar"
+        }
+    ],
+    "lunar_monthly": [
+        { "date": "01", "name_vi": "Mùng 1 âm lịch", "type": "lunar_monthly" },
+        { "date": "15", "name_vi": "Rằm âm lịch", "type": "lunar_monthly" }
+    ]
+}
