@@ -1,50 +1,102 @@
-# Welcome to your Expo app 👋
+# Vạn Sự Lịch
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Ứng dụng âm lịch Việt Nam với thiết kế hiện đại và giao diện thân thiện.
 
-## Get started
+## Tính năng
 
-1. Install dependencies
+-   **Xem ngày âm lịch hiện tại**: Hiển thị ngày âm lịch tương ứng với ngày dương lịch
+-   **Thông tin Can Chi**: Chi tiết can chi của ngày, tháng, năm âm lịch
+-   **Giờ Hoàng Đạo**: Danh sách giờ hoàng đạo trong ngày với mô tả chi tiết
+-   **Lịch tháng âm lịch**: Xem lịch tháng âm lịch đầy đủ
+-   **Giao diện đẹp**: Thiết kế hiện đại với hình ảnh nền động
 
-   ```bash
-   npm install
-   ```
+## Cài đặt
 
-2. Start the app
+### Yêu cầu hệ thống
 
-   ```bash
-   npx expo start
-   ```
+-   Node.js 18+
+-   Yarn hoặc npm
+-   Expo CLI
+-   Android Studio (cho Android)
+-   Xcode (cho iOS)
 
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+### Cài đặt dependencies
 
 ```bash
-npm run reset-project
+yarn install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Chạy ứng dụng
 
-## Learn more
+```bash
+# Khởi động Metro bundler
+yarn start
 
-To learn more about developing your project with Expo, look at the following resources:
+# Chạy trên Android
+yarn android
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+# Chạy trên iOS
+yarn ios
 
-## Join the community
+# Chạy trên web
+yarn web
+```
 
-Join our community of developers creating universal apps.
+## Build ứng dụng
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+### Build cho Android
+
+```bash
+yarn build:android
+```
+
+### Build cho iOS
+
+```bash
+yarn build:ios
+```
+
+### Build cho cả hai nền tảng
+
+```bash
+yarn build:all
+```
+
+## Cấu trúc dự án
+
+```
+vansulich/
+├── app/                    # Expo Router pages
+│   ├── (tabs)/           # Tab navigation
+│   │   ├── day.tsx      # Màn hình chính
+│   │   ├── month.tsx    # Lịch tháng
+│   │   └── settings.tsx # Cài đặt
+├── components/           # React components
+├── constants/           # Constants và utilities
+├── hooks/              # Custom hooks
+├── assets/             # Images và fonts
+└── android/            # Android native code
+```
+
+## Công nghệ sử dụng
+
+-   **React Native**: Framework chính
+-   **Expo**: Development platform
+-   **Expo Router**: File-based routing
+-   **NativeWind**: Tailwind CSS cho React Native
+-   **TypeScript**: Type safety
+-   **Expo Vector Icons**: Icon library
+
+## App Icon
+
+App sử dụng icon âm lịch ngày 5 làm icon mặc định, thể hiện sự may mắn và thịnh vượng trong văn hóa Việt Nam.
+
+## Hỗ trợ
+
+Nếu bạn gặp vấn đề hoặc có góp ý, vui lòng liên hệ:
+
+-   Email: support@vansulich.com
+
+## License
+
+MIT License
