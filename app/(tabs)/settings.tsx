@@ -1,57 +1,110 @@
-import Heading from "@/components/Heading";
-import { Feather } from "@expo/vector-icons";
-import React from "react";
-import { ScrollView, Text, View } from "react-native";
+import { DynamicIconDemo } from "@/components/DynamicIconDemo";
+import React, { useState } from "react";
+import {
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 
-const SettingsScreen = () => {
+export default function SettingsScreen() {
+    const [showIconDemo, setShowIconDemo] = useState(false);
+
     return (
-        <ScrollView className="flex-1 bg-gray-50">
-            <View className="mt-10 p-4">
-                <Heading
-                    title="Cài đặt"
-                    icon={<Feather name="settings" size={16} color="white" />}
-                />
+        <ScrollView style={styles.container}>
+            <Text style={styles.title}>Cài đặt</Text>
 
-                <View className="bg-white rounded-xl p-4 mb-4 shadow-sm">
-                    <Text className="text-lg font-semibold text-gray-800 mb-2">
-                        Thông tin ứng dụng
-                    </Text>
-                    <Text className="text-gray-600">
-                        Vạn Sự Lịch - Ứng dụng âm lịch Việt Nam
-                    </Text>
-                    <Text className="text-gray-600 mt-1">Phiên bản: 1.0.0</Text>
-                </View>
+            <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Tính năng</Text>
 
-                <View className="bg-white rounded-xl p-4 mb-4 shadow-sm">
-                    <Text className="text-lg font-semibold text-gray-800 mb-2">
-                        Tính năng
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => setShowIconDemo(!showIconDemo)}
+                >
+                    <Text style={styles.buttonText}>
+                        {showIconDemo ? "Ẩn" : "Hiển thị"} Icon động theo ngày
+                        âm lịch
                     </Text>
-                    <Text className="text-gray-600">
-                        • Xem ngày âm lịch hiện tại
-                    </Text>
-                    <Text className="text-gray-600">
-                        • Thông tin can chi ngày/tháng/năm
-                    </Text>
-                    <Text className="text-gray-600">
-                        • Giờ hoàng đạo trong ngày
-                    </Text>
-                    <Text className="text-gray-600">• Lịch tháng âm lịch</Text>
-                </View>
+                </TouchableOpacity>
+            </View>
 
-                <View className="bg-white rounded-xl p-4 mb-4 shadow-sm">
-                    <Text className="text-lg font-semibold text-gray-800 mb-2">
-                        Hỗ trợ
-                    </Text>
-                    <Text className="text-gray-600">
-                        Nếu bạn gặp vấn đề hoặc có góp ý, vui lòng liên hệ:
-                    </Text>
-                    <Text className="text-blue-600 mt-2">
-                        support@vansulich.com
-                    </Text>
+            {showIconDemo && (
+                <View style={styles.demoContainer}>
+                    <DynamicIconDemo />
                 </View>
+            )}
+
+            <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Thông tin</Text>
+                <Text style={styles.infoText}>• App: Văn Sử Lịch</Text>
+                <Text style={styles.infoText}>• Phiên bản: 1.0.0</Text>
+                <Text style={styles.infoText}>
+                    • Tính năng: Lịch âm dương Việt Nam
+                </Text>
+                <Text style={styles.infoText}>
+                    • Icon động theo ngày âm lịch
+                </Text>
             </View>
         </ScrollView>
     );
-};
+}
 
-export default SettingsScreen;
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        padding: 16,
+        backgroundColor: "#f5f5f5",
+    },
+    title: {
+        fontSize: 28,
+        fontWeight: "bold",
+        textAlign: "center",
+        marginBottom: 20,
+        color: "#333",
+    },
+    section: {
+        backgroundColor: "white",
+        padding: 16,
+        marginBottom: 16,
+        borderRadius: 8,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
+    },
+    sectionTitle: {
+        fontSize: 18,
+        fontWeight: "bold",
+        marginBottom: 12,
+        color: "#333",
+    },
+    button: {
+        backgroundColor: "#667eea",
+        padding: 12,
+        borderRadius: 6,
+        marginBottom: 8,
+        alignItems: "center",
+    },
+    buttonText: {
+        color: "white",
+        fontSize: 16,
+        fontWeight: "600",
+    },
+    demoContainer: {
+        marginBottom: 16,
+        borderRadius: 8,
+        overflow: "hidden",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
+    },
+    infoText: {
+        fontSize: 14,
+        color: "#666",
+        marginBottom: 4,
+    },
+});
