@@ -1,4 +1,4 @@
-import holidaysData from "./holidays.json";
+import holidaysData from "../assets/data/holidays.json";
 import { solarToLunar } from "./VILunar";
 
 export interface Holiday {

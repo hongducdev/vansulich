@@ -2,6 +2,7 @@ import Heading from "@/components/Heading";
 import LunarInfoCard from "@/components/ui/LunarInfoCard";
 import { getTodayAuspiciousHours, HourInfo } from "@/constants/AuspiciousHours";
 import { getCurrentLunarDate, type LunarInfo } from "@/constants/VILunar";
+import { useDailyImage } from "@/hooks/useDailyImage";
 import { Feather } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import {
@@ -16,6 +17,7 @@ const HomeScreen = () => {
     const [currentLunar, setCurrentLunar] = useState<LunarInfo | null>(null);
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [auspiciousHours, setAuspiciousHours] = useState<any>(null);
+    const dailyImage = useDailyImage();
 
     useEffect(() => {
         updateLunarDate();
@@ -58,7 +60,9 @@ const HomeScreen = () => {
                 {/* Header với background image */}
                 <ImageBackground
                     source={{
-                        uri: "https://images.unsplash.com/photo-1545172538-171a802bd867?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                        uri:
+                            dailyImage ||
+                            "https://images.unsplash.com/photo-1545172538-171a802bd867?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
                     }}
                     className="overflow-hidden mb-6 shadow-2xl rounded-b-2xl relative after:absolute after:top-0 after:left-0 after:w-full after:h-[20%] after:bg-gradient-to-b after:from-white after:to-transparent"
                     imageStyle={{ opacity: 0.9 }}

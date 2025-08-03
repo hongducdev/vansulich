@@ -33,6 +33,7 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
+import { useDailyImage } from "@/hooks/useDailyImage";
 
 const { width } = Dimensions.get("window");
 
@@ -54,6 +55,7 @@ const MonthCalendar = () => {
     const [showYearPicker, setShowYearPicker] = useState(false);
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const colorScheme = useColorScheme();
+    const dailyImage = useDailyImage();
 
     useEffect(() => {
         generateCalendarDays();
@@ -174,7 +176,9 @@ const MonthCalendar = () => {
                     {/* Header với background image */}
                     <ImageBackground
                         source={{
-                            uri: "https://images.unsplash.com/photo-1545172538-171a802bd867?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                            uri:
+                                dailyImage ||
+                                "https://images.unsplash.com/photo-1545172538-171a802bd867?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
                         }}
                         className="overflow-hidden mb-6 shadow-2xl rounded-b-2xl relative"
                         imageStyle={{ opacity: 0.9 }}
