@@ -69,8 +69,8 @@ export class DynamicIconService {
 
             // Only update if the day is between 1-31
             if (lunarDay >= 1 && lunarDay <= 31) {
-                // Try using just the day number
-                const iconName = `${lunarDay}`;
+                // Use descriptive name format that matches activity alias names
+                const iconName = `Day${lunarDay}`;
                 await setIcon(iconName);
                 console.log(`Updated app icon to lunar day ${lunarDay}`);
             } else {
@@ -93,8 +93,8 @@ export class DynamicIconService {
                 throw new Error("Lunar day must be between 1 and 31");
             }
 
-            // Try using just the day number
-            const iconName = `${lunarDay}`;
+            // Use descriptive name format that matches activity alias names
+            const iconName = `Day${lunarDay}`;
             await setIcon(iconName);
             console.log(`Updated app icon to lunar day ${lunarDay}`);
         } catch (error) {
