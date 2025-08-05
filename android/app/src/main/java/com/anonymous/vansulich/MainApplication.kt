@@ -28,6 +28,7 @@ class MainApplication : Application(), ReactApplication {
             packages.add(LunarDatePackage())
             packages.add(WidgetUpdatePackage())
             packages.add(HolidayDataPackage())
+            packages.add(NotificationPackage())
             return packages
           }
 

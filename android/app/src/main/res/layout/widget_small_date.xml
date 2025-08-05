@@ -15,7 +15,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true" />
 
-    <TextViewa
+    <TextView
         android:id="@+id/widget_day_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
